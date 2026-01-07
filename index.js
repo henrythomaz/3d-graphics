@@ -25,19 +25,53 @@ body.style.gap = "15px";
 body.style.margin = "15px"
 
 title.style.fontSize = "30px"
-  
+
 canvas.style.width = "500px"
 canvas.style.height = "500px"
   
 const BACKGROUND = "black";
 const COLOR = "green";
-  
+
 const FPS = 60;
+const dt = 1/FPS;
   
 let vertices = [];
 let faces = [];
 let dz = 2;
 let angle = 0;
+let rotX = 0;
+let rotY = 0;
+let dragging = false;
+let lastX = 0;
+let lastY = 0;
+
+canvas.addEventListener("mousedown", (e) => {
+  dragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
+
+canvas.addEventListener("mouseup", () => {
+  dragging = false;
+});
+
+canvas.addEventListener("mouseleave", () => {
+  dragging = false;
+});
+
+canvas.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+
+
+  rotY += dx * Math.PI * dt * 0.2;
+  rotX -= dy * Math.PI * dt * 0.2;
+
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
 
 function criarBotoesGraficos() {
   controls.innerHTML = "";
@@ -121,6 +155,19 @@ function translate_z({ x, y, z }, dz) {
   return { x, y, z: z + dz }
 }
 
+// Gira no eixo x
+function rotate_yz({ x, y, z }, angle) {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  return {
+    x,
+    y: y * cos - z * sin,
+    z: y * sin + z * cos,
+  };
+}
+
+
 // Gira no eixo y
   function rotate_xz({ x, y, z }, angle) {
   //  (\(x^{\prime }=x\cos \theta -y\sin \theta \), \(y^{\prime }=x\sin \theta +y\cos \theta \))
@@ -136,7 +183,6 @@ function translate_z({ x, y, z }, dz) {
 
 // Executa os frames
 function frame() {
-  const dt = 1/FPS;
   // dz += 1*dt;
   angle += Math.PI * dt;
 
@@ -152,8 +198,19 @@ function frame() {
         const b = vertices[face[(i + 1) % face.length]];
         if (!a || !b) continue; // Proteção contra índices inválidos
 
-        const p1 = screen(project(translate_z(rotate_xz(a, angle), dz)));
-        const p2 = screen(project(translate_z(rotate_xz(b, angle), dz)));
+        const va = rotate_xz(
+          rotate_yz(a, rotX),
+          rotY
+        );
+
+        const vb = rotate_xz(
+          rotate_yz(b, rotX),
+          rotY
+        );
+
+        const p1 = screen(project(translate_z(va, dz)));
+        const p2 = screen(project(translate_z(vb, dz)));
+
         line(p1, p2);
       }
     }

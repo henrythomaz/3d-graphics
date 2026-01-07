@@ -43,4 +43,4 @@
     [16,17,18,19],
   ];
 
-  return [vertices, faces];
+export const dados = [vertices, faces];

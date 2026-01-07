@@ -53,3 +53,4 @@ async function carregarDadosGrafico(arquivo) {
 }
 
 listarArquivosGraficosGitHub();
+carregarDadosGrafico();

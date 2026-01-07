@@ -1,9 +1,13 @@
-const segments = 16;
-const r = 0.5;
+const vertices = [];
+const faces = [];
 
 // =================
-// CAPACETE
+// CAPACETE (círculo)
 // =================
+const segments = 16;
+const r = 0.8;
+
+const helmetStart = vertices.length;
 
 for (let i = 0; i < segments; i++) {
   const angle = (i / segments) * Math.PI * 2;
@@ -11,15 +15,19 @@ for (let i = 0; i < segments; i++) {
     x: Math.cos(angle) * r,
     y: Math.sin(angle) * r,
     z: 0,
-  });  
+  });
 }
 
-faces.push([...Array(segments).keys()]);
+faces.push(
+  Array.from({ length: segments }, (_, i) => helmetStart + i)
+);
 
-const vertices = [
-  // =================
-  // CABEÇA (fofa / dentro)
-  // =================
+// =================
+// CABEÇA (dentro)
+// =================
+const headStart = vertices.length;
+
+vertices.push(
   { x:  0.0,  y:  0.6, z: 0 },
   { x:  0.55, y:  0.3, z: 0 },
   { x:  0.6,  y: -0.1, z: 0 },
@@ -28,70 +36,84 @@ const vertices = [
   { x: -0.4,  y: -0.45, z: 0 },
   { x: -0.6,  y: -0.1, z: 0 },
   { x: -0.55, y:  0.3, z: 0 },
+);
 
-  // =================
-  // ORELHA ESQ (dentro)
-  // =================
+faces.push(
+  Array.from({ length: 8 }, (_, i) => headStart + i)
+);
+
+// =================
+// ORELHAS
+// =================
+const earL = vertices.length;
+vertices.push(
   { x: -0.25, y: 0.7, z: 0 },
   { x: -0.22, y: 0.95, z: 0 },
   { x: -0.18, y: 0.7, z: 0 },
+);
+faces.push([earL, earL + 1, earL + 2]);
 
-  // =================
-  // ORELHA DIR (dentro)
-  // =================
+const earR = vertices.length;
+vertices.push(
   { x:  0.18, y: 0.7, z: 0 },
   { x:  0.22, y: 0.95, z: 0 },
   { x:  0.25, y: 0.7, z: 0 },
+);
+faces.push([earR, earR + 1, earR + 2]);
 
-  // =================
-  // OLHO ESQ
-  // =================
+// =================
+// OLHOS
+// =================
+const eyeL = vertices.length;
+vertices.push(
   { x: -0.22, y: 0.15, z: 0 },
   { x: -0.12, y: 0.15, z: 0 },
   { x: -0.12, y: 0.05, z: 0 },
   { x: -0.22, y: 0.05, z: 0 },
+);
+faces.push([eyeL, eyeL + 1, eyeL + 2, eyeL + 3]);
 
-  // =================
-  // OLHO DIR
-  // =================
+const eyeR = vertices.length;
+vertices.push(
   { x:  0.12, y: 0.15, z: 0 },
   { x:  0.22, y: 0.15, z: 0 },
   { x:  0.22, y: 0.05, z: 0 },
   { x:  0.12, y: 0.05, z: 0 },
+);
+faces.push([eyeR, eyeR + 1, eyeR + 2, eyeR + 3]);
 
-  // =================
-  // FOCINHO (oval)
-  // =================
+// =================
+// FOCINHO
+// =================
+const snout = vertices.length;
+vertices.push(
   { x:  0.0,  y: -0.05, z: 0 },
   { x:  0.22, y: -0.12, z: 0 },
   { x:  0.0,  y: -0.22, z: 0 },
   { x: -0.22, y: -0.12, z: 0 },
+);
+faces.push([snout, snout + 1, snout + 2, snout + 3]);
 
-  // =================
-  // NARIZ (pontinho)
-  // =================
+// =================
+// NARIZ
+// =================
+const nose = vertices.length;
+vertices.push(
   { x: -0.03, y: -0.13, z: 0 },
   { x:  0.03, y: -0.13, z: 0 },
   { x:  0.03, y: -0.17, z: 0 },
   { x: -0.03, y: -0.17, z: 0 },
+);
+faces.push([nose, nose + 1, nose + 2, nose + 3]);
 
-  // =================
-  // TRACINHO DO NARIZ
-  // =================
+// =================
+// TRACINHO
+// =================
+const mouth = vertices.length;
+vertices.push(
   { x:  0.0, y: -0.17, z: 0 },
   { x:  0.0, y: -0.27, z: 0 },
-];
-
-const faces = [
-  [0,1,2,3,4,5,6,7],        // capacete
-  [8,9,10,11,12,13,14,15], // cabeça
-  [16,17,18],              // orelha esq
-  [19,20,21],              // orelha dir
-  [22,23,24,25],           // olho esq
-  [26,27,28,29],           // olho dir
-  [30,31,32,33],           // focinho
-  [34,35,36,37],           // nariz
-  [38,39],                 // tracinho
-];
+);
+faces.push([mouth, mouth + 1]);
 
 export const dados = [vertices, faces];

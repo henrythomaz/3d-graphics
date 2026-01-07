@@ -42,7 +42,7 @@ vertices.push(
 );
 
 faces.push(
-  Array.from({ length: 16 }, (_, i) => headStart + i)
+  Array.from({ length: 2 }, (_, i) => headStart + i)
 );
 
 // =================

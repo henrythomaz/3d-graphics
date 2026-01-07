@@ -17,7 +17,7 @@ for (let i = 0; i < segments; i++) {
   vertices.push({
     x: Math.cos(angle) * r,
     y: Math.sin(angle) * r,
-    z: 5,
+    z: 0.3,
   });
 }
 
@@ -50,17 +50,17 @@ faces.push(
 // =================
 const earL = vertices.length;
 vertices.push(
-  { x: -0.25, y: 0.7, z: 0 },
-  { x: -0.22, y: 0.95, z: 0 },
-  { x: -0.18, y: 0.7, z: 0 },
+  { x: -0.25, y: 0.7, z: -0.05 },
+  { x: -0.22, y: 0.95, z: -0.05 },
+  { x: -0.18, y: 0.7, z: -0.05 },
 );
 faces.push([earL, earL + 1, earL + 2]);
 
 const earR = vertices.length;
 vertices.push(
-  { x:  0.18, y: 0.7, z: 0 },
-  { x:  0.22, y: 0.95, z: 0 },
-  { x:  0.25, y: 0.7, z: 0 },
+  { x:  0.18, y: 0.7, z: -0.05 },
+  { x:  0.22, y: 0.95, z: -0.05 },
+  { x:  0.25, y: 0.7, z: -0.05 },
 );
 faces.push([earR, earR + 1, earR + 2]);
 
@@ -69,19 +69,19 @@ faces.push([earR, earR + 1, earR + 2]);
 // =================
 const eyeL = vertices.length;
 vertices.push(
-  { x: -0.22, y: 0.15, z: 0 },
-  { x: -0.12, y: 0.15, z: 0 },
-  { x: -0.12, y: 0.05, z: 0 },
-  { x: -0.22, y: 0.05, z: 0 },
+  { x: -0.22, y: 0.15, z: -0.05 },
+  { x: -0.12, y: 0.15, z: -0.05 },
+  { x: -0.12, y: 0.05, z: -0.05 },
+  { x: -0.22, y: 0.05, z: -0.05 },
 );
 faces.push([eyeL, eyeL + 1, eyeL + 2, eyeL + 3]);
 
 const eyeR = vertices.length;
 vertices.push(
-  { x:  0.12, y: 0.15, z: 0 },
-  { x:  0.22, y: 0.15, z: 0 },
-  { x:  0.22, y: 0.05, z: 0 },
-  { x:  0.12, y: 0.05, z: 0 },
+  { x:  0.12, y: 0.15, z: -0.05 },
+  { x:  0.22, y: 0.15, z: -0.05 },
+  { x:  0.22, y: 0.05, z: -0.05 },
+  { x:  0.12, y: 0.05, z: -0.05 },
 );
 faces.push([eyeR, eyeR + 1, eyeR + 2, eyeR + 3]);
 

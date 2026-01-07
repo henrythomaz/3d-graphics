@@ -1,16 +1,22 @@
-const vertices = [
-  // =================
-  // CAPACETE
-  // =================
-  { x:  0.0,  y:  1.0, z: 0 },
-  { x:  0.8,  y:  0.6, z: 0 },
-  { x:  1.0,  y:  0.0, z: 0 },
-  { x:  0.8,  y: -0.6, z: 0 },
-  { x:  0.0,  y: -0.8, z: 0 },
-  { x: -0.8,  y: -0.6, z: 0 },
-  { x: -1.0,  y:  0.0, z: 0 },
-  { x: -0.8,  y:  0.6, z: 0 },
+const segments = 16;
+const r = 0.5;
 
+// =================
+// CAPACETE
+// =================
+
+for (let i = 0; i < segments; i++) {
+  const angle = (i / segments) * Math.PI * 2;
+  vertices.push({
+    x: Math.cos(angle) * r,
+    y: Math.sin(angle) * r,
+    z: 0,
+  });  
+}
+
+faces.push([...Array(segments).keys()]);
+
+const vertices = [
   // =================
   // CABEÇA (fofa / dentro)
   // =================

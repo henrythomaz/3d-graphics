@@ -17,7 +17,7 @@ for (let i = 0; i < segments; i++) {
   vertices.push({
     x: Math.cos(angle) * r,
     y: Math.sin(angle) * r,
-    z: 0,
+    z: 1,
   });
 }
 
@@ -42,7 +42,7 @@ vertices.push(
 );
 
 faces.push(
-  Array.from({ length: 2 }, (_, i) => headStart + i)
+  Array.from({ length: 8 }, (_, i) => headStart + i)
 );
 
 // =================

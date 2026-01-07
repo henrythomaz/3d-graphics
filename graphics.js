@@ -22,7 +22,7 @@ const REPO = "3d-graphics";
 const FOLDER = "graphics";
 
 async function listarArquivosGraficosGitHub() {
-  const url = `https://github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
+  const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
 
   try {
     const response = await fetch(url);

@@ -16,4 +16,9 @@ const faces = [
   [1, 5],
   [2, 6],
   [3, 7],
-]
+];
+
+export const dados = [
+  vertices,
+  faces
+];

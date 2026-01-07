@@ -39,4 +39,17 @@ async function listarArquivosGraficosGitHub() {
     console.log("Erro ao acessar a API do GitHb. :(", err);
   }
 }
+
+async function carregarDadosGrafico(arquivo) {
+  try {
+    const modulo = await import(`./graphics/${arquivo}`);
+    const meusDados = modulo.dados;
+
+    console.log("Vetor de vértices: ", meusDados.vertices);
+    return meusDados;
+  } catch(err) {
+    console.log("Erro ao importar o módulo: ", err);
+  }
+}
+
 listarArquivosGraficosGitHub();

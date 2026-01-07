@@ -1,7 +1,10 @@
+import { dadosColetados, listarArquivosGraficosGitHub } from "./graphics.js";
+
 const body = document.body;
-const title = document.querySelector("h1")
+const title = document.querySelector("h1");
+const controls = document.getElementById("controls");
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext("2d")
+const ctx = canvas.getContext("2d");
 
 console.log(body);
 console.log(title);
@@ -22,12 +25,56 @@ body.style.gap = "15px";
 body.style.margin = "15px"
 
 title.style.fontSize = "30px"
-
+  
 canvas.style.width = "500px"
 canvas.style.height = "500px"
-
+  
 const BACKGROUND = "black";
 const COLOR = "green";
+  
+const FPS = 60;
+  
+let vertices = [];
+let faces = [];
+let dz = 2;
+let angle = 0;
+
+function criarBotoesGraficos() {
+  controls.innerHTML = "";
+
+  Object.keys(dadosColetados).forEach(nome => {
+    const btn = document.createElement("button");
+    btn.textContent = nome;
+    
+    btn.onclick = () => {
+      vertices = dadosColetados[nome][0];
+      faces = dadosColetados[nome][1];
+    };
+
+    controls.appendChild(btn);
+  });
+}
+
+window.addEventListener("dadosCarregados", () => {
+  console.log("Modelos disponiveis: ", Object.keys(dadosColetados));
+
+  criarBotoesGraficos();
+  // Teste 
+  const primeiroModelo = Object.keys(dadosColetados)[1];
+  if(primeiroModelo) {
+    vertices = dadosColetados[primeiroModelo][0];
+    faces = dadosColetados[primeiroModelo][1];
+  }
+})
+
+// Um pequeno tempero css
+controls.style.display = "flex";
+controls.style.gap = "10px";
+
+controls.querySelectorAll("button").forEach(btn => {
+  btn.style.padding = "8px 12px";
+  btn.style.cursor = "pointer";
+});
 
 // Desenha a tela em branco
 function clear() {
@@ -68,7 +115,6 @@ function project({ x, y, z }) {
   return { x: dx, y: dy }
 }
 
-const FPS = 60;
 
 
 function translate_z({ x, y, z }, dz) {
@@ -76,7 +122,7 @@ function translate_z({ x, y, z }, dz) {
 }
 
 // Gira no eixo y
-function rotate_xz({ x, y, z }, angle) {
+  function rotate_xz({ x, y, z }, angle) {
   //  (\(x^{\prime }=x\cos \theta -y\sin \theta \), \(y^{\prime }=x\sin \theta +y\cos \theta \))
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
@@ -88,57 +134,6 @@ function rotate_xz({ x, y, z }, angle) {
   }
 }
 
-let vertices = [
-  { x: 0.5, y: 0.5, z: 0.5},
-  { x: -0.5, y: 0.5, z: 0.5},
-  { x: -0.5, y: -0.5, z: 0.5},
-  { x: 0.5, y: -0.5, z: 0.5},
-  
-  { x: 0.5, y: 0.5, z: -0.5},
-  { x: -0.5, y: 0.5, z: -0.5},
-  { x: -0.5, y: -0.5, z: -0.5},
-  { x: 0.5, y: -0.5, z: -0.5},
-];
-
-let faces = [
-  [0,1,2,3],
-  [4,5,6,7],
-  [0, 4],
-  [1, 5],
-  [2, 6],
-  [3, 7],
-  // [0, 1],
-  // [0, 2],
-  // [0, 3],
-  // [0, 4],
-  // [0, 5],
-  // [0, 6],
-  // [0, 7],
-  // [1, 2],
-  // [1, 3],
-  // [1, 4],
-  // [1, 5],
-  // [1, 6],
-  // [1, 7],
-  // [2, 3],
-  // [2, 4],
-  // [2, 5],
-  // [2, 6],
-  // [2, 7],
-  // [3, 4],
-  // [3, 5],
-  // [3, 6],
-  // [3, 7],
-  // [4, 5],
-  // [4, 6],
-  // [4, 7],
-  // [6, 7],
-]
-
-// Deslocamento de z
-let dz = 2;
-let angle = 0;
-
 // Executa os frames
 function frame() {
   const dt = 1/FPS;
@@ -149,14 +144,18 @@ function frame() {
   // for(const vertice of vertices) {
   //   point(screen(project(translate_z(rotate_xz(vertice, angle), dz))));
   // }
-  for(const face of faces) {
-    for(let i = 0; i < face.length; ++i) {
-      const a = vertices[face[i]];
-      const b = vertices[face[(i + 1)%face.length]];
-      const p1 = screen(project(translate_z(rotate_xz(a, angle), dz)));
-      const p2 = screen(project(translate_z(rotate_xz(b, angle), dz)));
 
-      line(p1, p2);
+  if (vertices.length > 0) {
+    for(const face of faces) {
+      for(let i = 0; i < face.length; ++i) {
+        const a = vertices[face[i]];
+        const b = vertices[face[(i + 1) % face.length]];
+        if (!a || !b) continue; // Proteção contra índices inválidos
+
+        const p1 = screen(project(translate_z(rotate_xz(a, angle), dz)));
+        const p2 = screen(project(translate_z(rotate_xz(b, angle), dz)));
+        line(p1, p2);
+      }
     }
   }
 
@@ -165,9 +164,9 @@ function frame() {
 
 // Orquestra tudo
 function main() {
+  listarArquivosGraficosGitHub();
   // Chama o orquestrador em loop
   setTimeout(frame, 1000/FPS);
 }
 
 main();
-

@@ -20,8 +20,9 @@
 const USER = "henrythomaz";
 const REPO = "3d-graphics";
 const FOLDER = "graphics";
+export const dadosColetados = {};
 
-async function listarArquivosGraficosGitHub() {
+export async function listarArquivosGraficosGitHub() {
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
 
   try {
@@ -29,28 +30,30 @@ async function listarArquivosGraficosGitHub() {
     const data = await response.json();
 
     console.log("Arquivos de graficos no GitHub");
-    data.forEach((file) => {
-      if(file.type == "file") {
-        console.log(file.name);
-      }
-    })
     
+    for(const file of data) {
+      if(file.type == "file" && file.name.endsWith(".js")) {
+        await carregarDadosGrafico(file.name);
+      }
+    }
+     window.dispatchEvent(new CustomEvent("dadosCarregados"));
   } catch (err) {
     console.log("Erro ao acessar a API do GitHb. :(", err);
   }
 }
 
-async function carregarDadosGrafico(arquivo) {
+async function carregarDadosGrafico(nomeArquivo) {
   try {
-    const modulo = await import(`./graphics/${arquivo}`);
-    const meusDados = modulo.dados;
+    const caminho = `./${FOLDER}/${nomeArquivo}`;
 
-    console.log("Vetor de vértices: ", meusDados.vertices);
+    const modulo = await import(caminho);
+    const meusDados = modulo.dados;
+    const nomeDaChave = nomeArquivo.replace(".js", "");
+
+    dadosColetados[nomeDaChave] = meusDados;
+    console.log("Dados coletados: ", dadosColetados);
     return meusDados;
   } catch(err) {
-    console.log("Erro ao importar o módulo: ", err);
+    console.log(`Erro ao importar o módulo: ${nomeArquivo}`, err);
   }
 }
-
-listarArquivosGraficosGitHub();
-carregarDadosGrafico();

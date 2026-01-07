@@ -17,7 +17,7 @@ for (let i = 0; i < segments; i++) {
   vertices.push({
     x: Math.cos(angle) * r,
     y: Math.sin(angle) * r,
-    z: 1,
+    z: 5,
   });
 }
 

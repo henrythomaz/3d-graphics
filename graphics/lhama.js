@@ -1,3 +1,6 @@
+// =================
+// BASE
+// =================
 const vertices = [];
 const faces = [];
 
@@ -28,14 +31,14 @@ faces.push(
 const headStart = vertices.length;
 
 vertices.push(
-  { x:  0.0,  y:  0.6, z: -1 },
-  { x:  0.55, y:  0.3, z: -1 },
-  { x:  0.6,  y: -0.1, z: -1 },
-  { x:  0.4,  y: -0.45, z: -1 },
-  { x:  0.0,  y: -0.55, z: -1 },
-  { x: -0.4,  y: -0.45, z: -1 },
-  { x: -0.6,  y: -0.1, z: -1 },
-  { x: -0.55, y:  0.3, z: -1 },
+  { x:  0.0,  y:  0.6, z: 0 },
+  { x:  0.55, y:  0.3, z: 0 },
+  { x:  0.6,  y: -0.1, z: 0 },
+  { x:  0.4,  y: -0.45, z: 0 },
+  { x:  0.0,  y: -0.55, z: 0 },
+  { x: -0.4,  y: -0.45, z: 0 },
+  { x: -0.6,  y: -0.1, z: 0 },
+  { x: -0.55, y:  0.3, z: 0 },
 );
 
 faces.push(
@@ -47,17 +50,17 @@ faces.push(
 // =================
 const earL = vertices.length;
 vertices.push(
-  { x: -0.25, y: 0.7, z: -1 },
-  { x: -0.22, y: 0.95, z: -1 },
-  { x: -0.18, y: 0.7, z: -1 },
+  { x: -0.25, y: 0.7, z: 0 },
+  { x: -0.22, y: 0.95, z: 0 },
+  { x: -0.18, y: 0.7, z: 0 },
 );
 faces.push([earL, earL + 1, earL + 2]);
 
 const earR = vertices.length;
 vertices.push(
-  { x:  0.18, y: 0.7, z: -1 },
-  { x:  0.22, y: 0.95, z: -1 },
-  { x:  0.25, y: 0.7, z: -1 },
+  { x:  0.18, y: 0.7, z: 0 },
+  { x:  0.22, y: 0.95, z: 0 },
+  { x:  0.25, y: 0.7, z: 0 },
 );
 faces.push([earR, earR + 1, earR + 2]);
 
@@ -66,19 +69,19 @@ faces.push([earR, earR + 1, earR + 2]);
 // =================
 const eyeL = vertices.length;
 vertices.push(
-  { x: -0.22, y: 0.15, z: -1 },
-  { x: -0.12, y: 0.15, z: -1 },
-  { x: -0.12, y: 0.05, z: -1 },
-  { x: -0.22, y: 0.05, z: -1 },
+  { x: -0.22, y: 0.15, z: 0 },
+  { x: -0.12, y: 0.15, z: 0 },
+  { x: -0.12, y: 0.05, z: 0 },
+  { x: -0.22, y: 0.05, z: 0 },
 );
 faces.push([eyeL, eyeL + 1, eyeL + 2, eyeL + 3]);
 
 const eyeR = vertices.length;
 vertices.push(
-  { x:  0.12, y: 0.15, z: -1 },
-  { x:  0.22, y: 0.15, z: -1 },
-  { x:  0.22, y: 0.05, z: -1 },
-  { x:  0.12, y: 0.05, z: -1 },
+  { x:  0.12, y: 0.15, z: 0 },
+  { x:  0.22, y: 0.15, z: 0 },
+  { x:  0.22, y: 0.05, z: 0 },
+  { x:  0.12, y: 0.05, z: 0 },
 );
 faces.push([eyeR, eyeR + 1, eyeR + 2, eyeR + 3]);
 
@@ -87,10 +90,10 @@ faces.push([eyeR, eyeR + 1, eyeR + 2, eyeR + 3]);
 // =================
 const snout = vertices.length;
 vertices.push(
-  { x:  0.0,  y: -0.05, z: -1 },
-  { x:  0.22, y: -0.12, z: -1 },
-  { x:  0.0,  y: -0.22, z: -1 },
-  { x: -0.22, y: -0.12, z: -1 },
+  { x:  0.0,  y: -0.05, z: 0 },
+  { x:  0.22, y: -0.12, z: 0 },
+  { x:  0.0,  y: -0.22, z: 0 },
+  { x: -0.22, y: -0.12, z: 0 },
 );
 faces.push([snout, snout + 1, snout + 2, snout + 3]);
 
@@ -99,21 +102,24 @@ faces.push([snout, snout + 1, snout + 2, snout + 3]);
 // =================
 const nose = vertices.length;
 vertices.push(
-  { x: -0.03, y: -0.13, z: -1 },
-  { x:  0.03, y: -0.13, z: -1 },
-  { x:  0.03, y: -0.17, z: -1 },
-  { x: -0.03, y: -0.17, z: -1 },
+  { x: -0.03, y: -0.13, z: 0 },
+  { x:  0.03, y: -0.13, z: 0 },
+  { x:  0.03, y: -0.17, z: 0 },
+  { x: -0.03, y: -0.17, z: 0 },
 );
 faces.push([nose, nose + 1, nose + 2, nose + 3]);
 
 // =================
-// TRACINHO
+// BOCA
 // =================
 const mouth = vertices.length;
 vertices.push(
-  { x:  0.0, y: -0.17, z: -1 },
-  { x:  0.0, y: -0.27, z: -1 },
+  { x:  0.0, y: -0.17, z: 0 },
+  { x:  0.0, y: -0.27, z: 0 },
 );
 faces.push([mouth, mouth + 1]);
 
+// =================
+// EXPORT
+// =================
 export const dados = [vertices, faces];

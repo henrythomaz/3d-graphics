@@ -2,57 +2,65 @@ let vertices = [];
 let faces = [];
 
 /**
- * Cria um Buraco Negro com Lente Gravitacional (Estilo Interestelar)
+ * Cria um Buraco Negro com a Sombra de Schwarzschild e Lente Gravitacional
  */
-function criarBuracoNegroRealista(raioSingularidade = 0.5) {
+function criarBuracoNegroSchw(raioSombra = 0.5) {
   const startOffset = vertices.length;
 
-  // 1. HORIZONTE DE EVENTOS (Esfera Geodésica/Icosfera)
-  // Usamos uma malha de triângulos uniforme para o centro negro
+  // 1. SOMBRA DE SCHWARZSCHILD (Icosfera densa)
+  // Base do Icosaedro para geometria geodésica uniforme
   const t = (1 + Math.sqrt(5)) / 2;
-  const vIco = [
+  const vBase = [
     [-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0],
     [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t],
     [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]
   ];
 
-  vIco.forEach(v => {
+  vBase.forEach(v => {
     let m = Math.sqrt(v[0]**2 + v[1]**2 + v[2]**2);
     vertices.push({ 
-      x: (v[0]/m) * raioSingularidade, 
-      y: (v[1]/m) * raioSingularidade, 
-      z: (v[2]/m) * raioSingularidade 
+      x: (v[0]/m) * raioSombra, 
+      y: (v[1]/m) * raioSombra, 
+      z: (v[2]/m) * raioSombra 
     });
   });
 
-  const facesIco = [
-    [0,11,5], [0,5,1], [0,1,7], [0,7,10], [0,10,11], [1,5,9], [5,11,4], [11,10,2], [10,7,6], [7,1,8],
-    [3,9,4], [3,4,2], [3,2,6], [3,6,8], [3,8,9], [4,9,5], [2,4,11], [6,2,10], [8,6,7], [9,8,1]
+  const fBase = [
+    [0,11,5], [0,5,1], [0,1,7], [0,7,10], [0,10,11],
+    [1,5,9], [5,11,4], [11,10,2], [10,7,6], [7,1,8],
+    [3,9,4], [3,4,2], [3,2,6], [3,6,8], [3,8,9],
+    [4,9,5], [2,4,11], [6,2,10], [8,6,7], [9,8,1]
   ];
-  facesIco.forEach(f => faces.push(f.map(i => startOffset + i)));
+  fBase.forEach(f => faces.push(f.map(i => startOffset + i)));
 
-  // 2. DISCO DE ACREÇÃO DEFORMADO (Lógica de Lente Gravitacional)
-  const numAneis = 12;
-  const pontosPorAnel = 40;
+  // 2. DISCO DE ACREÇÃO COM DEFORMAÇÃO RELATIVÍSTICA
+  // O disco não é plano; ele é curvado pela gravidade (Lente Gravitacional)
+  const numAneis = 14;
+  const pontosPorAnel = 48;
 
   for (let j = 0; j < numAneis; j++) {
     const ringOffset = vertices.length;
-    const r = raioSingularidade * (2.0 + j * 0.4); // Distância radial
+    // O disco começa no raio de Schwarzschild estável (aprox 2.6x o raio)
+    const r = raioSombra * (2.2 + j * 0.35); 
 
     for (let i = 0; i <= pontosPorAnel; i++) {
       const theta = (i / pontosPorAnel) * Math.PI * 2;
-      const x = r * Math.cos(theta);
-      const z = r * Math.sin(theta);
+      
+      // Coordenadas base do plano
+      let vx = r * Math.cos(theta);
+      let vz = r * Math.sin(theta);
+      
+      /**
+       * LÓGICA DA SOMBRA: 
+       * Projetamos o arco que vemos "atrás" do buraco negro para cima e para baixo.
+       * Isso cria o anel que circunda a sombra verticalmente.
+       */
+      const fatorLente = Math.pow(raioSombra / r, 2) * 1.5;
+      const vy = Math.sin(theta) * r * fatorLente;
 
-      // MATEMÁTICA DA LENTE: A luz de trás é puxada para cima do buraco negro
-      // Usamos a função seno para criar o arco superior e inferior simultaneamente
-      // Isso cria o efeito de "anel duplo" que envolve a esfera
-      const curvatura = Math.pow(raioSingularidade / r, 1.5) * 1.2;
-      const y = Math.sin(theta) * r * curvatura;
+      vertices.push({ x: vx, y: vy, z: vz });
 
-      vertices.push({ x, y, z });
-
-      // Conecta as faces do disco
+      // Gerar as faces da malha do disco
       if (j > 0 && i < pontosPorAnel) {
         const p1 = ringOffset + i;
         const p2 = ringOffset + i + 1;
@@ -64,5 +72,7 @@ function criarBuracoNegroRealista(raioSingularidade = 0.5) {
   }
 }
 
-criarBuracoNegroRealista(0.45);
+// Raio de 0.45 para caber bem na tela com dz=2
+criarBuracoNegroSchw(0.45);
+
 export const dados = [vertices, faces];

@@ -93,13 +93,23 @@ window.addEventListener("dadosCarregados", () => {
   console.log("Modelos disponiveis: ", Object.keys(dadosColetados));
 
   criarBotoesGraficos();
-  // Teste 
-  const primeiroModelo = Object.keys(dadosColetados)[1];
-  if(primeiroModelo) {
-    vertices = dadosColetados[primeiroModelo][0];
-    faces = dadosColetados[primeiroModelo][1];
+
+  // ARREMARE AQUI:
+  const nomeModelo = "lhama.js"; // O nome do arquivo como string
+  
+  if (dadosColetados[nomeModelo]) {
+    vertices = dadosColetados[nomeModelo][0];
+    faces = dadosColetados[nomeModelo][1];
+    console.log("Modelo inicial carregado:", nomeModelo);
+  } else {
+    // Caso não ache a lhama, pega o primeiro modelo da lista automaticamente
+    const nomes = Object.keys(dadosColetados);
+    if (nomes.length > 0) {
+      vertices = dadosColetados[nomes[0]][0];
+      faces = dadosColetados[nomes[0]][1];
+    }
   }
-})
+});
 
 // Um pequeno tempero css
 controls.style.display = "flex";
@@ -187,9 +197,9 @@ function frame() {
   // angle += Math.PI * dt;
 
   clear();
-  for(const vertice of vertices) {
-    point(screen(project(translate_z(rotate_xz(vertice, angle), dz))));
-  }
+  // for(const vertice of vertices) {
+  //   point(screen(project(translate_z(rotate_xz(vertice, angle), dz))));
+  // }
 
   if (vertices.length > 0) {
     for(const face of faces) {

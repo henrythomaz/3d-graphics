@@ -94,19 +94,21 @@ window.addEventListener("dadosCarregados", () => {
 
   criarBotoesGraficos();
 
-  // ARREMARE AQUI:
-  const nomeModelo = "lhama.js"; // O nome do arquivo como string
-  
-  if (dadosColetados[nomeModelo]) {
-    vertices = dadosColetados[nomeModelo][0];
-    faces = dadosColetados[nomeModelo][1];
-    console.log("Modelo inicial carregado:", nomeModelo);
+  // CORREÇÃO: Acesse o objeto diretamente pelo nome da chave (string)
+  const nomeDesejado = "lhama.js"; 
+
+  if (dadosColetados[nomeDesejado]) {
+    // Atribui os vértices e faces corretamente usando a chave direta
+    vertices = dadosColetados[nomeDesejado][0];
+    faces = dadosColetados[nomeDesejado][1];
+    console.log("Modelo inicial carregado:", nomeDesejado);
   } else {
-    // Caso não ache a lhama, pega o primeiro modelo da lista automaticamente
-    const nomes = Object.keys(dadosColetados);
-    if (nomes.length > 0) {
-      vertices = dadosColetados[nomes[0]][0];
-      faces = dadosColetados[nomes[0]][1];
+    // Fallback: Se não achar a lhama, pega o primeiro modelo que existir
+    const chaves = Object.keys(dadosColetados);
+    if (chaves.length > 0) {
+      const primeiraChave = chaves[0];
+      vertices = dadosColetados[primeiraChave][0];
+      faces = dadosColetados[primeiraChave][1];
     }
   }
 });

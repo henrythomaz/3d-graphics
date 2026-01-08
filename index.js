@@ -76,18 +76,101 @@ canvas.addEventListener("mousemove", (e) => {
 function criarBotoesGraficos() {
   controls.innerHTML = "";
 
+  // Container para o botão Lhama (Fixo)
+  const btnLhama = document.createElement("button");
+  btnLhama.textContent = "🦙 Lhama";
+  btnLhama.style.fontWeight = "bold";
+  btnLhama.style.backgroundColor = "#444";
+  btnLhama.onclick = () => {
+    vertices = dadosColetados["lhama"][0];
+    faces = dadosColetados["lhama"][1];
+  };
+  controls.appendChild(btnLhama);
+
+  // Container para o Menu "Formas"
+  const menuContainer = document.createElement("div");
+  menuContainer.style.position = "relative";
+  menuContainer.style.display = "inline-block";
+
+  const btnFormas = document.createElement("button");
+  btnFormas.textContent = "📦 Formas ▼";
+  btnFormas.style.backgroundColor = "#555";
+  
+  const dropdown = document.createElement("div");
+  dropdown.style.display = "none"; // Escondido por padrão
+  dropdown.style.position = "absolute";
+  dropdown.style.bottom = "100%"; // Abre para cima
+  dropdown.style.left = "0";
+  dropdown.style.backgroundColor = "#333";
+  dropdown.style.border = "1px solid white";
+  dropdown.style.zIndex = "10";
+  dropdown.style.flexDirection = "column";
+  dropdown.style.minWidth = "120px";
+
+  // Preenche o dropdown com as outras formas (exceto a lhama)
   Object.keys(dadosColetados).forEach(nome => {
+    if (nome === "lhama") return; // Pula a lhama pois ela já tem botão próprio
+
     const btn = document.createElement("button");
     btn.textContent = nome;
-    
+    btn.style.width = "100%";
+    btn.style.textAlign = "left";
+    btn.style.backgroundColor = "transparent";
+    btn.style.border = "none";
+    btn.style.color = "white";
+    btn.style.padding = "8px";
+
     btn.onclick = () => {
       vertices = dadosColetados[nome][0];
       faces = dadosColetados[nome][1];
+      dropdown.style.display = "none"; // Fecha ao clicar
     };
 
-    controls.appendChild(btn);
+    dropdown.appendChild(btn);
   });
+
+  // Mostrar/Esconder dropdown ao clicar em "Formas"
+  btnFormas.onclick = (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === "none" ? "flex" : "none";
+  };
+
+  // Fecha o menu se clicar fora dele
+  window.onclick = () => { dropdown.style.display = "none"; };
+
+  menuContainer.appendChild(btnFormas);
+  menuContainer.appendChild(dropdown);
+  controls.appendChild(menuContainer);
 }
+
+// Estilização do container de controles
+controls.style.display = "flex";
+controls.style.gap = "20px";
+controls.style.marginTop = "10px";
+controls.style.padding = "10px";
+
+// Estilo global para todos os botões que entrarem no controls
+const style = document.createElement('style');
+style.innerHTML = `
+  #controls button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #444;
+    color: white;
+    border: 1px solid #777;
+    border-radius: 5px;
+    transition: 0.3s;
+  }
+  #controls button:hover {
+    background-color: #666;
+    border-color: #fff;
+  }
+  #controls div div button:hover {
+    background-color: green !important;
+  }
+`;
+document.head.appendChild(style);
+
 
 window.addEventListener("dadosCarregados", () => {
   console.log("Modelos disponiveis: ", Object.keys(dadosColetados));
@@ -95,7 +178,7 @@ window.addEventListener("dadosCarregados", () => {
   criarBotoesGraficos();
 
   // CORREÇÃO: Acesse o objeto diretamente pelo nome da chave (string)
-  const nomeDesejado = "lhama.js"; 
+  const nomeDesejado = "lhama"; 
 
   if (dadosColetados[nomeDesejado]) {
     // Atribui os vértices e faces corretamente usando a chave direta
@@ -103,6 +186,7 @@ window.addEventListener("dadosCarregados", () => {
     faces = dadosColetados[nomeDesejado][1];
     console.log("Modelo inicial carregado:", nomeDesejado);
   } else {
+    console.log(dadosColetados[nomeDesejado])
     // Fallback: Se não achar a lhama, pega o primeiro modelo que existir
     const chaves = Object.keys(dadosColetados);
     if (chaves.length > 0) {

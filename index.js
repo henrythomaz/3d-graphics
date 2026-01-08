@@ -184,12 +184,12 @@ function rotate_yz({ x, y, z }, angle) {
 // Executa os frames
 function frame() {
   // dz += 1*dt;
-  angle += Math.PI * dt;
+  // angle += Math.PI * dt;
 
   clear();
-  // for(const vertice of vertices) {
-  //   point(screen(project(translate_z(rotate_xz(vertice, angle), dz))));
-  // }
+  for(const vertice of vertices) {
+    point(screen(project(translate_z(rotate_xz(vertice, angle), dz))));
+  }
 
   if (vertices.length > 0) {
     for(const face of faces) {

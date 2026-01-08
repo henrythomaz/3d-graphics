@@ -2,77 +2,70 @@ let vertices = [];
 let faces = [];
 
 /**
- * Cria um Buraco Negro com a Sombra de Schwarzschild e Lente Gravitacional
+ * Função auxiliar para criar prismas/cilindros (Corpo e Antena)
  */
-function criarBuracoNegroSchw(raioSombra = 0.5) {
-  const startOffset = vertices.length;
-
-  // 1. SOMBRA DE SCHWARZSCHILD (Icosfera densa)
-  // Base do Icosaedro para geometria geodésica uniforme
-  const t = (1 + Math.sqrt(5)) / 2;
-  const vBase = [
-    [-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0],
-    [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t],
-    [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]
-  ];
-
-  vBase.forEach(v => {
-    let m = Math.sqrt(v[0]**2 + v[1]**2 + v[2]**2);
-    vertices.push({ 
-      x: (v[0]/m) * raioSombra, 
-      y: (v[1]/m) * raioSombra, 
-      z: (v[2]/m) * raioSombra 
-    });
-  });
-
-  const fBase = [
-    [0,11,5], [0,5,1], [0,1,7], [0,7,10], [0,10,11],
-    [1,5,9], [5,11,4], [11,10,2], [10,7,6], [7,1,8],
-    [3,9,4], [3,4,2], [3,2,6], [3,6,8], [3,8,9],
-    [4,9,5], [2,4,11], [6,2,10], [8,6,7], [9,8,1]
-  ];
-  fBase.forEach(f => faces.push(f.map(i => startOffset + i)));
-
-  // 2. DISCO DE ACREÇÃO COM DEFORMAÇÃO RELATIVÍSTICA
-  // O disco não é plano; ele é curvado pela gravidade (Lente Gravitacional)
-  const numAneis = 14;
-  const pontosPorAnel = 48;
-
-  for (let j = 0; j < numAneis; j++) {
-    const ringOffset = vertices.length;
-    // O disco começa no raio de Schwarzschild estável (aprox 2.6x o raio)
-    const r = raioSombra * (2.2 + j * 0.35); 
-
-    for (let i = 0; i <= pontosPorAnel; i++) {
-      const theta = (i / pontosPorAnel) * Math.PI * 2;
-      
-      // Coordenadas base do plano
-      let vx = r * Math.cos(theta);
-      let vz = r * Math.sin(theta);
-      
-      /**
-       * LÓGICA DA SOMBRA: 
-       * Projetamos o arco que vemos "atrás" do buraco negro para cima e para baixo.
-       * Isso cria o anel que circunda a sombra verticalmente.
-       */
-      const fatorLente = Math.pow(raioSombra / r, 2) * 1.5;
-      const vy = Math.sin(theta) * r * fatorLente;
-
-      vertices.push({ x: vx, y: vy, z: vz });
-
-      // Gerar as faces da malha do disco
-      if (j > 0 && i < pontosPorAnel) {
-        const p1 = ringOffset + i;
-        const p2 = ringOffset + i + 1;
-        const p3 = (ringOffset - (pontosPorAnel + 1)) + i + 1;
-        const p4 = (ringOffset - (pontosPorAnel + 1)) + i;
-        faces.push([p1, p2, p3, p4]);
-      }
+function adicionarPrisma(raioX, raioY, altura, posX, posY, posZ, lados = 8) {
+  const start = vertices.length;
+  
+  for (let j = 0; j <= 1; j++) {
+    const y = posY + (j === 0 ? -altura / 2 : altura / 2);
+    for (let i = 0; i < lados; i++) {
+      const a = (i / lados) * Math.PI * 2;
+      vertices.push({ 
+        x: posX + Math.cos(a) * raioX, 
+        y: y, 
+        z: posZ + Math.sin(a) * raioY 
+      });
     }
+  }
+
+  // Faces laterais
+  for (let i = 0; i < lados; i++) {
+    const n = (i + 1) % lados;
+    faces.push([start + i, start + n, start + lados + n, start + lados + i]);
   }
 }
 
-// Raio de 0.45 para caber bem na tela com dz=2
-criarBuracoNegroSchw(0.45);
+/**
+ * Função para criar os Painéis Solares (Retângulos finos)
+ */
+function adicionarPainel(largura, altura, profundidade, posX, posY, posZ) {
+  const start = vertices.length;
+  const h = altura / 2;
+  const w = largura / 2;
+  const d = profundidade / 2;
+
+  // 8 vértices de um paralelepípedo
+  const pts = [
+    {x: -w, y: -h, z: -d}, {x: w, y: -h, z: -d}, {x: w, y: h, z: -d}, {x: -w, y: h, z: -d},
+    {x: -w, y: -h, z: d}, {x: w, y: -h, z: d}, {x: w, y: h, z: d}, {x: -w, y: h, z: d}
+  ];
+
+  pts.forEach(p => vertices.push({ x: p.x + posX, y: p.y + posY, z: p.z + posZ }));
+
+  // Faces do cubo/painel
+  const f = [[0,1,2,3], [4,5,6,7], [0,1,5,4], [2,3,7,6], [0,3,7,4], [1,2,6,5]];
+  f.forEach(face => faces.push(face.map(i => start + i)));
+}
+
+// --- MONTAGEM DO SATÉLITE ---
+
+// 1. CORPO CENTRAL (Octógono alongado)
+adicionarPrisma(0.15, 0.15, 0.5, 0, 0, 0, 8);
+
+// 2. PAINÉIS SOLARES (Asas laterais)
+// Painel Esquerdo
+adicionarPainel(0.6, 0.02, 0.3, -0.45, 0, 0);
+// Painel Direito
+adicionarPainel(0.6, 0.02, 0.3, 0.45, 0, 0);
+
+// 3. ANTENA PARABÓLICA (Na frente)
+// Haste da antena
+adicionarPrisma(0.02, 0.02, 0.2, 0, 0.35, 0, 4);
+// Prato da antena (Cilindro curto e largo)
+adicionarPrisma(0.2, 0.2, 0.05, 0, 0.45, 0, 12);
+
+// 4. LENTE/INSTRUMENTO (Na base)
+adicionarPrisma(0.1, 0.1, 0.1, 0, -0.3, 0, 6);
 
 export const dados = [vertices, faces];

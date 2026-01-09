@@ -12,4 +12,4 @@ Henry's 3D Graphics in JavaScript.
 
 ## Contact
 
-<a href="mailto:henrythcampos@gmail.com?subject=Hello, Henry!&cc=henry.campos@estudante.ifms.edu.br">email<a>
+<a href="mailto:henrythcampos@gmail.com?subject=Hello, Henry!&cc=henry.campos@estudante.ifms.edu.br">email</a>

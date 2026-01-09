@@ -44,3 +44,13 @@ The goal is learning and visual exploration.
 ## ▶️ How to Run
 
 [site](https://henrythomaz.github.io/3d-graphics/)
+
+---
+
+## License
+
+MIT License.
+
+You can study with this repository, although you must follow its license:
+
+Check out [LICENSE](./LICENSE) for more details.
